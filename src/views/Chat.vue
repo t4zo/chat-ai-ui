@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { onMounted, nextTick
-  // , useTemplateRef
-   } from "vue";
+import { onMounted, nextTick } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "../stores/user.ts";
 import { useChatStore } from "../stores/chat.ts";
@@ -16,39 +14,32 @@ const chatStore = useChatStore()
 
 const router = useRouter()
 
-// const chatTemplateRef = useTemplateRef('chat')
-
 onMounted(async () => {
   await chatStore.loadChatHistory()
 
-  scrollToBotton()
+  await scrollToBotton()
 })
 
 if (!userStore.isAuthenticated()) {
   router.push('/')
 }
 
-function scrollToBotton() {
-  nextTick(() => {
-    // console.log(chatTemplateRef)
-    // chatTemplateRef.scrollTop = chatTemplateRef.scrollHeight
+async function scrollToBotton() {
+  await nextTick()
 
-    const chatContainer = document.querySelector('#chatContainer')
-    console.log(chatContainer)
-    console.log(chatContainer?.scrollTop)
-    console.log(chatContainer?.scrollHeight)
-    if (chatContainer) {
-      chatContainer.scrollTop = chatContainer.scrollHeight
-    }
+  const chatContainer = document.querySelector('.input-ask-anything')
+  if (!chatContainer) return
+  chatContainer.scrollIntoView({
+    behavior: 'smooth'
   })
 }
 </script>
 
 <template>
   <main class="min-h-dvh flex flex-col bg-gray-900 text-white">
-      <Header />
-      <Messages />
-      <Feedback />
-      <Input @send="chatStore.sendMessage" />
+    <Header />
+    <Messages />
+    <Feedback />
+    <Input @send="chatStore.sendMessage" />
   </main>
 </template>
