@@ -7,7 +7,6 @@ import { useChatStore } from "../stores/chat.ts";
 import Header from "../components/Header.vue";
 import Messages from "../components/Messages.vue";
 import Input from "../components/Input.vue";
-import Feedback from "../components/Feedback.vue";
 
 const userStore = useUserStore()
 const chatStore = useChatStore()
@@ -39,7 +38,6 @@ async function scrollToBotton() {
   <main class="min-h-dvh flex flex-col bg-gray-900 text-white">
     <Header />
     <Messages />
-    <Feedback />
     <Input @send="chatStore.sendMessage" />
   </main>
 </template>

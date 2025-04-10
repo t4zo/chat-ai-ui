@@ -6,36 +6,25 @@ import { AI, USER } from "../constants";
 
 type MessageRole = typeof USER | typeof AI
 
-export type ChatMessage = {
+export type Message = {
+  id: string,
   message: string,
   reply: string
+  createdAt: string
 }
 
-export type GetChatMessages = {
-  messages: ChatMessage[]
-}
-
-// export type ChatMessage = {
-//   id: string,
-//   userId: string,
-//   message: string,
-//   reply: string
-//   createdAt: string
-// }
-
-export type FormattedMessage = {
+export type FormattedAIMessage = {
   role: MessageRole
   content: string
 }
 
 export const useChatStore = defineStore('chat', () => {
-  // const messages = ref<ChatMessage[]>([])
-  const messages = ref<FormattedMessage[]>([])
+  const messages = ref<FormattedAIMessage[]>([])
   const isLoading = ref(false)
 
   const userStore = useUserStore()
 
-  function isUserMessage(message: FormattedMessage) {
+  function isUserMessage(message: FormattedAIMessage) {
     return message.role === USER
   }
 
@@ -44,17 +33,13 @@ export const useChatStore = defineStore('chat', () => {
     if (!userStore.isAuthenticated()) return
 
     try {
-      const { data } = await axios.post<GetChatMessages>(`${import.meta.env.VITE_API_URL}/get-messages`, {
-        userId: userStore.userId
-      })
-
-      // messages.value = data.messages
-      messages.value = data.messages
-        .flatMap((message: ChatMessage): FormattedMessage[] => [
+      const { data } = await axios.get<Message[]>(`${import.meta.env.VITE_API_URL}/chat?userId=${userStore.userId}`)
+      const chatMessages = data.flatMap((message: Message): FormattedAIMessage[] => [
           { role: USER, content: message.message },
           { role: AI, content: message.reply },
         ])
-        .filter((message: FormattedMessage) => message.content)
+
+      messages.value = chatMessages
     } catch (err) {
       console.error('Error fetching chat history', err)
     }

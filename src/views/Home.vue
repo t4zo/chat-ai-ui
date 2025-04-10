@@ -3,7 +3,6 @@ import robotImage from '../assets/robot.png'
 import { ref, onMounted, useTemplateRef } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '../stores/user'
-import axios from 'axios'
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -29,14 +28,9 @@ async function handleSubmit() {
     error.value = ''
 
     try {
-        const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/register-user`, {
+        await userStore.registerUser({
             name: name.value,
             email: email.value
-        })
-
-        userStore.setUser({
-            userId: data.userId,
-            name: data.name
         })
 
         router.push('/chat')

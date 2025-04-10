@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-const { isUserMessage, content } = defineProps(['isUserMessage', 'content'])
+const { isUserMessage, content } = defineProps<{ isUserMessage: boolean, content: string }>()
 
 function formatMessage(text: string) {
   if(!text) return ''
@@ -18,5 +18,5 @@ function formatMessage(text: string) {
 </script>
 
 <template>
-  <p :class="`${isUserMessage ? 'bg-blue-600' : 'bg-gray-700'} max-w-xs md:max-w-4xl  px-4 py-4 rounded-lg text-white`" v-html="formatMessage(content)" />
+  <p :class="`${isUserMessage ? 'bg-blue-600' : 'bg-gray-700'} max-w-xs md:max-w-4xl px-4 py-4 rounded-lg text-white`" v-html="formatMessage(content)" />
 </template>
